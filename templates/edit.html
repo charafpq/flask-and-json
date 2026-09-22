@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Task</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  h1 {
+    margin-top: 0;
+    color: #222;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #444;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  .btn-row {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    text-align: center;
+  }
+  .btn-save { background: #1565c0; }
+  .btn-save:hover { background: #104a8f; }
+  .btn-cancel { background: #888; }
+  .btn-cancel:hover { background: #6d6d6d; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Edit Task</h1>
+
+  <form id="editForm" onsubmit="updateTask(event , {{task.id}})">
+    <label for="taskName">Task Name</label>
+    <input type="text" id="taskName" value="{{ task.name }}" required>
+
+    <label for="taskDesc">Task Description</label>
+    <textarea id="taskDesc">{{ task.desc or '' }}</textarea>
+
+    <div class="btn-row">
+      <button type="submit" class="btn btn-save">Update Task</button>
+      <a href="{{ url_for('hello_start') }}" class="btn btn-cancel">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  async function updateTask(e, id) {
+    e.preventDefault();
+
+    const payload = {
+      taskName: document.getElementById('taskName').value,
+      taskDesc: document.getElementById('taskDesc').value
+    };
+
+    const response = await fetch(`/edit/${id}`, {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify(payload)
+      
+    });
+
+    if (response.ok) {
+      window.location.href = "{{ url_for('hello_start') }}";
+    }
+  }
+</script>
+
+</body>
+</html>
